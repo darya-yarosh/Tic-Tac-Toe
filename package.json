@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@pixi/assets": "^7.3.3",
+    "pixi.js": "^7.3.3"
+  }
+}
