@@ -8,7 +8,7 @@ export const GridCellData = {
     textureDefault: 'assets/CellDefault.png',
     textureDown: 'assets/CellDown.png',
     textureOver: 'assets/CellOver.png',
-    textFontFamily: 'Somerset Barnyard',
+    textFontFamily: 'TunnelFront',
     textColorDefault: 'white',
     textColorDown: '#636363',
     textColorOver: '#636363',
@@ -22,17 +22,18 @@ export default class GridCell {
         this._view.eventMode = 'passive';
 
         this._cell = new Sprite(Texture.from(GridCellData.textureDefault));
-        this._cell.interactive = true;
-        this._cell.cursor = 'hover';
         this._cell.x = positionX;
         this._cell.y = positionY;
+        this._cell.cursor = 'pointer';
         this._cell.eventMode = 'static';
         this._cell
-            .on('pointerdown', () => this.onCellDown(action))
-            .on('pointerup', () => this.onCellUp())
-            .on('pointerupoutside', () => this.onCellUp())
+            .on('pointerdown', () => this.onCellDown())
+            .on('pointerup', () => this.onCellUp(action))
+            .on('pointerupoutside', () => this.onCellUpOutside())
             .on('pointerover', () => this.onCellOver())
             .on('pointerout', () => this.onCellOut());
+        this._cell.isDown = false;
+        this._cell.isOver = false;
 
         this._symbol = new Text('', {
             fontFamily: GridCellData.textFontFamily,
@@ -63,28 +64,29 @@ export default class GridCell {
         this._symbol.text = newSymbol;
     }
 
-    onCellDown(action) {
+    onCellDown() {
         this._cell.isDown = true;
-        this._cell.texture = Texture.from(GridCellData.textureDown);
-        this._cell.alpha = 1;
+        this._cell.texture = Texture.from(GridCellData.textureDown)
 
         this._symbol.style.fill = GridCellData.textColorDown;
+    }
+
+    onCellUp(action) {
+        this._cell.isDown = false;
+        this._cell.texture = Texture.from(GridCellData.textureDefault);
+
+        this._symbol.style.fill = GridCellData.textColorDefault;
 
         if (this._symbol.text === "") {
             this._symbol.text = STATE.playerList[STATE.currentPlayerNum - 1].symbol;
-    
+
             action(this.indexes);
         }
     }
 
-    onCellUp() {
+    onCellUpOutside() {
         this._cell.isDown = false;
-        if (this._cell.isOver) {
-            this._cell.texture = Texture.from(GridCellData.textureOver);
-        }
-        else {
-            this._cell.texture = Texture.from(GridCellData.textureDefault);
-        }
+        this._cell.texture = Texture.from(GridCellData.textureDefault);
 
         this._symbol.style.fill = GridCellData.textColorDefault;
     }

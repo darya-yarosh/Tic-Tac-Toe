@@ -2,10 +2,10 @@ import { BlurFilter, Container, Graphics, Text } from "../js/pixi.mjs";
 
 import { STATE, PAGES } from "../index.js";
 
+import Grid from "../components/Grid.js";
+import { GridCellData } from "../components/GridCell.js";
 import Button, { ButtonData } from "../components/Button.js";
 
-import Grid from "../models/Grid.js";
-import { GridCellData } from "../models/GridCell.js";
 import Game, { GAME_STATUSES } from "../models/Game.js";
 import { SCREEN_SIZE, TextData } from "../models/Interface.js";
 
@@ -35,9 +35,10 @@ export default function DrawGame(currentStage) {
         winContainer.backgroundColor = "red";
 
         const bg = new Graphics();
-        bg.beginFill(0x444444, 0.5);
+        bg.beginFill(0x444444, 0.7);
         bg.drawRect(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
         bg.endFill();
+        bg.eventMode = 'static';
         winContainer.addChild(bg);
         // Blurs whatever is rendered by the container
         //currentStage.filters = [new BlurFilter()];
@@ -63,7 +64,7 @@ export default function DrawGame(currentStage) {
             align: 'center',
         });
         winAllert.x = SCREEN_SIZE.width / 2 - winAllert.width / 2;
-        winAllert.y = SCREEN_SIZE.height / 5 - winAllert.height / 2;
+        winAllert.y = SCREEN_SIZE.height / 5 - winAllert.height / 1.5;
         winContainer.addChild(winAllert);
 
         // Кнопка рестарта

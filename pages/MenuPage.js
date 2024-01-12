@@ -30,22 +30,24 @@ function drawHeader(currentStage) {
     gameTitle.x = SCREEN_SIZE.width / 2 - gameTitle.width / 2;
     gameTitle.y = SCREEN_SIZE.height / 6 - gameTitle.height / 2;
     currentStage.addChild(gameTitle);
-    
+
     // Текст подзаголовка
-    const gameSubtitle = new Text(`Play with a friend on a single device`, {
+    const gameSubtitle = new Text(`Play with a friend\non a single device`, {
         fontFamily: TextData.textFontFamily,
         fontSize: 32,
         fill: TextData.textColorDefault,
         align: 'center',
     });
+    gameSubtitle.id = "gameSubtitle";
     gameSubtitle.x = SCREEN_SIZE.width / 2 - gameSubtitle.width / 2;
-    gameSubtitle.y = SCREEN_SIZE.height / 4 - gameSubtitle.height / 2;
+    gameSubtitle.y = SCREEN_SIZE.height / 4 - gameSubtitle.height / 2.5;
     currentStage.addChild(gameSubtitle);
 }
 
 function drawInterface(currentStage) {
+    const gameSubtitleHeight = currentStage.getChildAt(currentStage.children.length-1).height;
     const gap = 125;
-    const startPosition = 300;
+    const startPosition = SCREEN_SIZE.height / 4 + gameSubtitleHeight * 1.5;
 
     const buttonPositions = [
         {

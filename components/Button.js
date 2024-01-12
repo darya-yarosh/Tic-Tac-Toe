@@ -8,7 +8,7 @@ export const ButtonData = {
     textureDefault: 'assets/ButtonDefault.png',
     textureDown: 'assets/ButtonDown.png',
     textureOver: 'assets/ButtonOver.png',
-    textFontFamily: 'Somerset Barnyard',
+    textFontFamily: 'TunnelFront',
     textColorDefault: 'white',
     textColorDown: '#636363',
     textColorOver: '#636363',
@@ -22,13 +22,16 @@ export default class Button {
         this._button = new Sprite(Texture.from(ButtonData.textureDefault));
         this._button.x = positionX;
         this._button.y = positionY;
+        this._button.cursor = 'pointer';
         this._button.eventMode = 'static';
         this._button
-            .on('pointerdown', () => this.onButtonDown(action))
-            .on('pointerup', () => this.onButtonUp())
-            .on('pointerupoutside', () => this.onButtonUp())
+            .on('pointerdown', () => this.onButtonDown())
+            .on('pointerup', () => this.onButtonUp(action))
+            .on('pointerupoutside', () => this.onButtonUpOutside())
             .on('pointerover', () => this.onButtonOver())
             .on('pointerout', () => this.onButtonOut());
+        this._button.isDown = false;
+        this._button.isOver = false;
 
         this._text = new Text(text, {
             fontFamily: ButtonData.textFontFamily,
@@ -47,24 +50,25 @@ export default class Button {
         return this._view;
     }
 
-    onButtonDown(action) {
-        this._button.isDown = true;
+    onButtonDown() {
         this._button.texture = Texture.from(ButtonData.textureDown);
-        this._button.alpha = 1;
+        this._button.isDown = true;
 
         this._text.style.fill = ButtonData.textColorDown;
+    }
+
+    onButtonUp(action) {
+        this._button.texture = Texture.from(ButtonData.textureDefault);
+        this._button.isDown = false;
+
+        this._text.style.fill = ButtonData.textColorDefault;
 
         action();
     }
 
-    onButtonUp() {
+    onButtonUpOutside() {
         this._button.isDown = false;
-        if (this._button.isOver) {
-            this._button.texture = Texture.from(ButtonData.textureOver);
-        }
-        else {
-            this._button.texture = Texture.from(ButtonData.textureDefault);
-        }
+        this._button.texture = Texture.from(ButtonData.textureDefault);
 
         this._text.style.fill = ButtonData.textColorDefault;
     }
@@ -76,7 +80,6 @@ export default class Button {
         }
 
         this._button.texture = Texture.from(ButtonData.textureOver);
-
         this._text.style.fill = ButtonData.textColorOver;
     }
 

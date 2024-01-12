@@ -1,31 +1,31 @@
-import { Container, autoDetectRenderer } from './js/pixi.mjs';
+import { Application, Assets } from './js/pixi.mjs';
 
 import Player from "./models/Player.js";
-import { SCREEN_SIZE } from './models/Interface.js';
+import { COLORS, SCREEN_SIZE } from './models/Interface.js';
 
 import DrawMenu from './pages/MenuPage.js';
 import DrawGame from './pages/GamePage.js';
 
-var renderer = autoDetectRenderer({
+import assetsMap from './js/assetsMap.js';
+
+const app = new Application({
     width: SCREEN_SIZE.width,
     height: SCREEN_SIZE.height,
-    backgroundColor: 0x000000
+    backgroundColor: COLORS.black,
+    view: document.getElementById("canvas"),
+    antialias: true,
+    autoResize: true,
+    transparent: true,
 });
-document.body.appendChild(renderer.view);
-
-var stage = new Container();
-stage.height = SCREEN_SIZE.height;
-stage.width = SCREEN_SIZE.width;
-stage.interactive = true;
 
 export const PAGES = {
     menu: {
         name: "Menu",
-        draw: () => DrawMenu(stage),
+        draw: () => DrawMenu(app.stage),
     },
     game: {
         name: "Game",
-        draw: () => DrawGame(stage),
+        draw: () => DrawGame(app.stage),
     }
 }
 
@@ -38,14 +38,39 @@ export const STATE = {
     currentPlayerNum: 1,
 }
 
-function RunApp() {
+const RunApp = () => {
     STATE.currentPage.draw();
-    update();
 }
 
-RunApp()
+// Loading assets
+async function loadAssets() {
+    // Adding bundles
+    Assets.addBundle(
+        'sprites',
+        assetsMap.sprites.reduce(
+            (accumulator, currentValue) => ({
+                ...accumulator,
+                [currentValue.name]: currentValue.url
+            }), {}
+        )
+    )
+    Assets.addBundle(
+        'fonts',
+        assetsMap.fonts.reduce(
+            (accumulator, currentValue) => ({
+                ...accumulator,
+                [currentValue.name]: currentValue.url
+            }), {}
+        )
+    );
 
-function update() {
-    requestAnimationFrame(update);
-    renderer.render(stage);
-};
+    const isLoadedSprites = await Assets.loadBundle('sprites');
+    const isLoadedFonts = await Assets.loadBundle('fonts');
+
+    return isLoadedSprites && isLoadedFonts;
+}
+
+// Start the game
+loadAssets().then(() => {
+    RunApp();
+})

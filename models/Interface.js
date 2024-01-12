@@ -1,6 +1,13 @@
 export const SCREEN_SIZE = {
-    width: 800,
-    height: 800,
+    width: 
+        window.outerWidth < window.innerWidth 
+        ? window.outerWidth
+        : window.innerWidth,
+    height: 
+        window.outerHeight < window.innerHeight 
+        ? window.outerHeight
+        : window.innerHeight,
+    marginPercent: 10,
 }
 
 export const COLORS = {
@@ -10,7 +17,7 @@ export const COLORS = {
 }
 
 export const TextData = {
-    textFontFamily: 'Somerset Barnyard',
+    textFontFamily: 'TunnelFront',
     textColorDefault: 'white',
     textColorDown: '#636363',
     textColorOver: '#636363',
