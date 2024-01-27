@@ -5,9 +5,9 @@ import { STATE } from '../index.js';
 export const GridCellData = {
     width: 96,
     height: 96,
-    textureDefault: 'assets/CellDefault.png',
-    textureDown: 'assets/CellDown.png',
-    textureOver: 'assets/CellOver.png',
+    textureDefault: 'CellDefault',
+    textureDown: 'CellDown',
+    textureOver: 'CellOver',
     textFontFamily: 'TunnelFront',
     textColorDefault: 'white',
     textColorDown: '#636363',

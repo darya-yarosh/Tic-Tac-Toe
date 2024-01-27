@@ -5,9 +5,9 @@ import { Container, Sprite, Texture, Text } from '../js/pixi.mjs';
 export const ButtonData = {
     width: 226,
     height: 96,
-    textureDefault: 'assets/ButtonDefault.png',
-    textureDown: 'assets/ButtonDown.png',
-    textureOver: 'assets/ButtonOver.png',
+    textureDefault: 'ButtonDefault',
+    textureDown: 'ButtonDown',
+    textureOver: 'ButtonOver',
     textFontFamily: 'TunnelFront',
     textColorDefault: 'white',
     textColorDown: '#636363',
