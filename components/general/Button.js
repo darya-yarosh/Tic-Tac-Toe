@@ -1,13 +1,11 @@
-import { Container, Sprite, Texture, Text } from '../js/pixi.mjs';
-
-// TODO: добавить передачу текстур кнопки в контейнер, но чтобы они в функциях применялись
+import { Container, Sprite, Texture, Text } from '../../js/pixi.mjs';
 
 export const ButtonData = {
     width: 226,
     height: 96,
-    textureDefault: 'assets/ButtonDefault.png',
-    textureDown: 'assets/ButtonDown.png',
-    textureOver: 'assets/ButtonOver.png',
+    textureDefault: 'ButtonDefault',
+    textureDown: 'ButtonDown',
+    textureOver: 'ButtonOver',
     textFontFamily: 'TunnelFront',
     textColorDefault: 'white',
     textColorDown: '#636363',
@@ -58,12 +56,12 @@ export default class Button {
     }
 
     onButtonUp(action) {
+        action();
+
         this._button.texture = Texture.from(ButtonData.textureDefault);
         this._button.isDown = false;
 
         this._text.style.fill = ButtonData.textColorDefault;
-
-        action();
     }
 
     onButtonUpOutside() {

@@ -1,86 +1,58 @@
-import { Text } from "../js/pixi.mjs";
+import { Container } from "../js/pixi.mjs";
 
-import { PAGES, STATE } from "../index.js";
+import { STATE } from "../index.js";
 
-import ButtonList from "../components/ButtonList.js";
-import { ButtonData } from "../components/Button.js";
+import { SCREEN_SIZE } from "../models/Interface.js";
 
-import { SCREEN_SIZE, TextData } from "../models/Interface.js";
+import PlayerEditor, { PlayerEditorData } from "../components/PlayerEditorForm.js";
+import MenuInterface, { MenuInterfaceData } from "../components/MenuInterface.js";
 
 export default function DrawMenu(currentStage) {
     currentStage.removeChildren(0);
 
-    // Название игры
-    drawHeader(currentStage);
+    const GAP = 24;
+    const menuContainer = new Container();
 
-    // Игровое меню
-    drawInterface(currentStage);
+    const firstPlayerPosition = {
+        x: 0,
+        y: SCREEN_SIZE.height/6,
+    };
+    const menuInterfacePosition = {
+        x: PlayerEditorData.width + GAP,
+        y: SCREEN_SIZE.height / 4,
+    };
+    const secondPlayerPosition = {
+        x: menuInterfacePosition.x + MenuInterfaceData.width + GAP,
+        y: SCREEN_SIZE.height/6
+    };
 
-    // Поля для выбора игроков
+    // Game menu
+    drawMenuInterface(menuContainer, menuInterfacePosition)
+
+    // The form of changing the data of the first player
+    drawPlayerEditor(menuContainer, STATE.playerList[0], firstPlayerPosition);
+
+    // The form of changing the data of the second player
+    drawPlayerEditor(menuContainer, STATE.playerList[1], secondPlayerPosition);
+
+    menuContainer.x = SCREEN_SIZE.width /2 - menuContainer.width/2; // до 900px в ширину
+    currentStage.addChild(menuContainer)
+    
 }
 
-function drawHeader(currentStage) {
-    // Текст заголовка
-    const gameTitle = new Text(`Tic-Tac-Toe`, {
-        fontFamily: TextData.textFontFamily,
-        fontSize: 48,
-        fill: TextData.textColorDefault,
-        align: 'center',
-    });
-    gameTitle.x = SCREEN_SIZE.width / 2 - gameTitle.width / 2;
-    gameTitle.y = SCREEN_SIZE.height / 6 - gameTitle.height / 2;
-    currentStage.addChild(gameTitle);
-
-    // Текст подзаголовка
-    const gameSubtitle = new Text(`Play with a friend\non a single device`, {
-        fontFamily: TextData.textFontFamily,
-        fontSize: 32,
-        fill: TextData.textColorDefault,
-        align: 'center',
-    });
-    gameSubtitle.id = "gameSubtitle";
-    gameSubtitle.x = SCREEN_SIZE.width / 2 - gameSubtitle.width / 2;
-    gameSubtitle.y = SCREEN_SIZE.height / 4 - gameSubtitle.height / 2.5;
-    currentStage.addChild(gameSubtitle);
+function drawMenuInterface(currentStage, position) {
+    const menuInterface = new MenuInterface(
+        position.x,
+        position.y
+    )
+    currentStage.addChild(menuInterface.view)
 }
 
-function drawInterface(currentStage) {
-    const gameSubtitleHeight = currentStage.getChildAt(currentStage.children.length-1).height;
-    const gap = 125;
-    const startPosition = SCREEN_SIZE.height / 4 + gameSubtitleHeight * 1.5;
-
-    const buttonPositions = [
-        {
-            position: {
-                x: SCREEN_SIZE.width / 2 - ButtonData.width / 2,
-                y: startPosition + gap * 0
-            },
-            text: "Start",
-            action: () => {
-                STATE.currentPage = PAGES.game;
-                STATE.currentPage.draw();
-            },
-        },
-        {
-            position: {
-                x: SCREEN_SIZE.width / 2 - ButtonData.width / 2,
-                y: startPosition + gap * 1
-            },
-            text: "Settings",
-            action: () => { },
-        },
-        {
-            position: {
-                x: SCREEN_SIZE.width / 2 - ButtonData.width / 2,
-                y: startPosition + gap * 2
-            },
-            text: "About",
-            action: () => { },
-        },
-    ];
-    const buttons = new ButtonList(buttonPositions);
-
-    buttons.view.forEach(button => {
-        currentStage.addChild(button.view)
-    })
+function drawPlayerEditor(currentStage, player, position) {
+    const playerEditorForm = new PlayerEditor(
+        position.x,
+        position.y,
+        player,
+    )
+    currentStage.addChild(playerEditorForm.view)
 }

@@ -1,6 +1,6 @@
 import { Application, Assets } from './js/pixi.mjs';
 
-import Player from "./models/Player.js";
+import Player, { PlayerSymbolIcons } from "./models/Player.js";
 import { COLORS, SCREEN_SIZE } from './models/Interface.js';
 
 import DrawMenu from './pages/MenuPage.js';
@@ -11,7 +11,7 @@ import assetsMap from './js/assetsMap.js';
 const app = new Application({
     width: SCREEN_SIZE.width,
     height: SCREEN_SIZE.height,
-    backgroundColor: COLORS.black,
+    backgroundColor: COLORS.lightBlue,
     view: document.getElementById("canvas"),
     antialias: true,
     autoResize: true,
@@ -32,14 +32,10 @@ export const PAGES = {
 export const STATE = {
     currentPage: PAGES.menu,
     playerList: [
-        new Player("Player 1", "X"),
-        new Player("Player 2", "O"),
+        new Player("Player 1", PlayerSymbolIcons[0].iconSrc, "0x6568ca"),
+        new Player("Player 2", PlayerSymbolIcons[1].iconSrc, "0xf94c4c"),
     ],
     currentPlayerNum: 1,
-}
-
-const RunApp = () => {
-    STATE.currentPage.draw();
 }
 
 // Loading assets
@@ -68,6 +64,10 @@ async function loadAssets() {
     const isLoadedFonts = await Assets.loadBundle('fonts');
 
     return isLoadedSprites && isLoadedFonts;
+}
+
+const RunApp = () => {
+    STATE.currentPage.draw();
 }
 
 // Start the game

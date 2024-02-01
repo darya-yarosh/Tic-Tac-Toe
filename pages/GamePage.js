@@ -1,13 +1,12 @@
-import { BlurFilter, Container, Graphics, Text } from "../js/pixi.mjs";
-
 import { STATE, PAGES } from "../index.js";
 
-import Grid from "../components/Grid.js";
-import { GridCellData } from "../components/GridCell.js";
-import Button, { ButtonData } from "../components/Button.js";
+import GameGrid from "../components/GameGrid.js";
+import AlertForm from "../components/general/AlertForm.js";
+import { GameGridCellData } from "../components/GameGridCell.js";
+import Button, { ButtonData } from "../components/general/Button.js";
 
+import { SCREEN_SIZE } from "../models/Interface.js";
 import Game, { GAME_STATUSES } from "../models/Game.js";
-import { SCREEN_SIZE, TextData } from "../models/Interface.js";
 
 export function swapCurrentPlayer() {
     STATE.currentPlayerNum =
@@ -19,92 +18,45 @@ export function swapCurrentPlayer() {
 export default function DrawGame(currentStage) {
     currentStage.removeChildren(0);
 
-    // Старт игры
+    // Start game
     const game = new Game();
 
-    // Функция окончания игры
+    // A function to complete the game.
     function endGame(currentMap) {
-        // Уведомление об окончании 
-        const winContainer = new Container();
-
-        // Фон уведомления
-        winContainer.width = SCREEN_SIZE.width;
-        winContainer.height = SCREEN_SIZE.height;
-        winContainer.fill = "red";
-        winContainer.color = "red";
-        winContainer.backgroundColor = "red";
-
-        const bg = new Graphics();
-        bg.beginFill(0x444444, 0.7);
-        bg.drawRect(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
-        bg.endFill();
-        bg.eventMode = 'static';
-        winContainer.addChild(bg);
-        // Blurs whatever is rendered by the container
-        //currentStage.filters = [new BlurFilter()];
-        // Only the contents within a circle at the center should be rendered onto the screen.
-        // currentStage.mask = new Graphics()
-        //     .beginFill("red")
-        //     .drawRect(
-        //         winContainer.width, 
-        //         winContainer.height, 
-        //         500,
-        //         500
-        //     )
-        //     .endFill();
-
-        // Текст уведомления
+        // End alert
         const winAlertText = game.winner !== null
             ? `${game.winner.name} win!`
             : 'Draw!';
-        const winAllert = new Text(winAlertText, {
-            fontFamily: TextData.textFontFamily,
-            fontSize: 48,
-            fill: TextData.textColorDefault,
-            align: 'center',
-        });
-        winAllert.x = SCREEN_SIZE.width / 2 - winAllert.width / 2;
-        winAllert.y = SCREEN_SIZE.height / 5 - winAllert.height / 1.5;
-        winContainer.addChild(winAllert);
-
-        // Кнопка рестарта
-        const restartButton = new Button(
-            SCREEN_SIZE.width / 2 - ButtonData.width / 2,
-            SCREEN_SIZE.height / 3 - ButtonData.height / 2,
-            'Restart',
-            () => {
-                game.restart();
-                currentMap.restartMap();
-                currentStage.removeChildren(currentStage.children.length - 1);
-            });
-        winContainer.addChild(restartButton.view);
-
-        // Добавление всей модалки на страницу
-        currentStage.addChild(winContainer);
+        const alertForm = new AlertForm(winAlertText, 'Reset', () => {
+            game.restart();
+            currentMap.restartMap();
+            currentStage.removeChildren(currentStage.children.length - 1);
+        })
+        currentStage.addChild(alertForm.view);
     }
 
-    // Рейтинговая строка двух игроков
+    // TODO: The rating line of two players
 
-    // Поле для игры
-    const currentMap = new Grid(
-        SCREEN_SIZE.width / 2 - GridCellData.width * 1.5,
+    // The playing field
+    const currentMap = new GameGrid(
+        SCREEN_SIZE.width / 2 - GameGridCellData.width * 1.5,
         200,
-        () => {
-            // Отслеживание на выигрышные комбинации
-            game.playerMove(currentMap.map);
-            // Если игра окончена, запуск функции конца игры
+        (cellIndexes) => {
+            // Tracking for winning combinations
+            game.playerMove(currentMap.map, cellIndexes);
+            // If the game is over, start the end game function
             if (game.status === GAME_STATUSES.ended) {
                 endGame(currentMap)
             }
         }
     )
 
-    // Добавление сетки на экран
+    // Adding a grid to the screen
     currentMap.view.forEach(child => {
         currentStage.addChild(child.view);
     })
 
-    // Кнопка возврата в меню
+    // The return button to the menu
     const returnButton = new Button(
         (SCREEN_SIZE.width - ButtonData.width) / 2,
         SCREEN_SIZE.height - ButtonData.height * 2,
