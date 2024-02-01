@@ -1,17 +1,24 @@
+const SCREEN_ORIENTATION_TYPES = {
+    lanscape: 'landskape',
+    portrait: 'portrait'
+}
+
 export const SCREEN_SIZE = {
     width: 
-        window.outerWidth < window.innerWidth 
-        ? window.outerWidth
+        window.innerWidth < window.innerHeight
+        ? window.innerHeight
         : window.innerWidth,
     height: 
-        window.outerHeight < window.innerHeight 
-        ? window.outerHeight
+        window.innerWidth < window.innerHeight
+        ? window.innerWidth
         : window.innerHeight,
     marginPercent: 10,
+    orientationType: SCREEN_ORIENTATION_TYPES.lanscape
 }
 
 export const COLORS = {
-    black: 0x000000,
+    lightBlue: 0x6fa2cc,
+    black: 0x290025,
     gray: 0xc2c2c2,
     red: 0xff0000,
 }
