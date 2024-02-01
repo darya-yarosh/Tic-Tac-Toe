@@ -1,4 +1,4 @@
-import Button from './Button.js';
+import Button from '../../components/general/Button.js';
 
 export default class ButtonList {
     constructor(buttonsInfo) {

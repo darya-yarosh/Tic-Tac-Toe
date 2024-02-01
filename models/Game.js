@@ -1,5 +1,7 @@
 import { STATE } from "../index.js";
 
+import { swapCurrentPlayer } from "../pages/GamePage.js";
+
 export const GAME_STATUSES = {
     inGame: 'inGame',
     ended: 'ended'
@@ -25,7 +27,13 @@ class Game {
         this.winner = null;
     }
 
-    playerMove(map) {
+    playerMove(map, cellIndexes) {
+        const [row, column] = cellIndexes;
+        map[row][column] = map[row][column] === null
+                ? STATE.playerList[STATE.currentPlayerNum - 1].symbol
+                : map[row][column];
+        swapCurrentPlayer();
+
         this.step += 1;
         if (this.step >= 5) {
             this.calculate(map)

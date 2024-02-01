@@ -1,12 +1,8 @@
 import { Container } from "../js/pixi.mjs";
 
-import { STATE } from "../index.js";
+import GameGridCell, { GameGridCellData } from "../components/GameGridCell.js";
 
-import GridCell, { GridCellData } from "./GridCell.js";
-
-import { swapCurrentPlayer } from "../pages/GamePage.js";
-
-export default class Grid {
+export default class GameGrid {
     constructor(positionX, positionY, action) {
         this._view = new Container();
 
@@ -20,16 +16,15 @@ export default class Grid {
         for (let rowI = 0; rowI < 3; rowI++) {
             for (let cellI = 0; cellI < 3; cellI++) {
                 const cellIndexes = [rowI, cellI];
-                const cellPositionX = positionX + (GridCellData.width * cellI);
-                const cellPositionY = positionY + (GridCellData.height * rowI);
+                const cellPositionX = positionX + (GameGridCellData.width * cellI);
+                const cellPositionY = positionY + (GameGridCellData.height * rowI);
 
-                const cell = new GridCell(
+                const cell = new GameGridCell(
                     cellIndexes,
                     cellPositionX,
                     cellPositionY,
-                    (cellIndexes) => {
-                        this.playerMove(cellIndexes)
-                        action();
+                    () => {
+                        action(cellIndexes);
                     }
                 )
                 this._mapSprite.push(cell);
@@ -45,14 +40,6 @@ export default class Grid {
         return this._mapSprite;
     }
 
-    playerMove(cellIndexes) {
-        const [row, column] = cellIndexes;
-        this._map[row][column] = this._map[row][column] === null
-            ? STATE.playerList[STATE.currentPlayerNum - 1].symbol
-            : this._map[row][column];
-        swapCurrentPlayer();
-    }
-
     restartMap() {
         this._map = [
             [null, null, null],
@@ -60,7 +47,7 @@ export default class Grid {
             [null, null, null],
         ]
         this._mapSprite = this._mapSprite.map(cell => {
-            cell.symbol.text = null;
+            cell.spriteSrc = null;
             return cell;
         });
     }

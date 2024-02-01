@@ -1,6 +1,4 @@
-import { Container, Sprite, Texture, Text } from '../js/pixi.mjs';
-
-// TODO: добавить передачу текстур кнопки в контейнер, но чтобы они в функциях применялись
+import { Container, Sprite, Texture, Text } from '../../js/pixi.mjs';
 
 export const ButtonData = {
     width: 226,
@@ -58,12 +56,12 @@ export default class Button {
     }
 
     onButtonUp(action) {
+        action();
+
         this._button.texture = Texture.from(ButtonData.textureDefault);
         this._button.isDown = false;
 
         this._text.style.fill = ButtonData.textColorDefault;
-
-        action();
     }
 
     onButtonUpOutside() {
